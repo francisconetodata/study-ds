@@ -323,23 +323,6 @@ Em clustering, o objetivo é agrupar dados similares. Avaliar clustering é mais
     3. Selecionar a combinação de hiperparâmetros que gerou o melhor desempenho.  
   * **Exemplo:** Usando GridSearchCV do scikit-learn em Python para otimizar os hiperparâmetros de um classificador SVM.
 
-    *from sklearn.model\_selection import GridSearchCV*
-
-    *from sklearn.svm import SVC*
-
-    *from sklearn.datasets import make\_classification*
-
-    *X, y \= make\_classification(random\_state=0)*
-
-    *param\_grid \= {'C': \[0.1, 1, 10\], 'gamma': \[0.01, 0.1, 1\]}*
-
-    *grid\_search \= GridSearchCV(SVC(), param\_grid, cv=3) \# cv=3 para cross-validation*
-
-    *grid\_search.fit(X, y)*
-
-    *print("Melhores hiperparâmetros:", grid\_search.best\_params\_)*
-
-    *print("Melhor score:", grid\_search.best\_score\_)*
 
   * **Vantagens:** Simples de implementar, garante que explora todas as combinações definidas na grade.  
   * **Desvantagens:** Computacionalmente caro, especialmente com muitos hiperparâmetros ou grades extensas. Ineficiente se alguns hiperparâmetros são mais importantes que outros. Pode perder ótimos valores se eles não estiverem exatamente na grade definida.  
@@ -355,25 +338,7 @@ Em clustering, o objetivo é agrupar dados similares. Avaliar clustering é mais
     4. Selecionar a combinação de hiperparâmetros que gerou o melhor desempenho.  
   * **Exemplo:** Usando RandomizedSearchCV do scikit-learn.
 
-    *from sklearn.model\_selection import RandomizedSearchCV*
 
-    *from sklearn.svm import SVC*
-
-    *from sklearn.datasets import make\_classification*
-
-    *from scipy.stats import uniform, expon*
-
-    *X, y \= make\_classification(random\_state=0)*
-
-    *param\_distributions \= {'C': expon(scale=100), 'gamma': uniform(loc=0, scale=1)}*
-
-    *random\_search \= RandomizedSearchCV(SVC(), param\_distributions, n\_iter=10, cv=3, random\_state=0) \# n\_iter define o número de amostras*
-
-    *random\_search.fit(X, y)*
-
-    *print("Melhores hiperparâmetros:", random\_search.best\_params\_)*
-
-    *print("Melhor score:", random\_search.best\_score\_)*
 
   * **Vantagens:** Mais eficiente que Grid Search, especialmente quando alguns hiperparâmetros são mais importantes. Pode encontrar melhores resultados com o mesmo orçamento computacional.  
   * **Desvantagens:** Não garante a exploração exaustiva do espaço de hiperparâmetros. Pode perder o ótimo global. A performance pode variar dependendo das amostras aleatórias.  
@@ -389,33 +354,7 @@ Em clustering, o objetivo é agrupar dados similares. Avaliar clustering é mais
     7. Selecionar a combinação de hiperparâmetros que gerou o melhor desempenho.  
   * **Exemplo:** Usando bibliotecas como Optuna ou BayesSearchCV do scikit-optimize.
 
-    import optuna
 
-    from sklearn.svm import SVC
-
-    from sklearn.datasets import make\_classification
-
-    from sklearn.model\_selection import cross\_val\_score
-
-    X, y \= make\_classification(random\_state=0)
-
-    def objective(trial):
-
-        C \= trial.suggest\_float('C', 1e-5, 1e2, log=True)
-
-        gamma \= trial.suggest\_float('gamma', 1e-5, 1e1, log=True)
-
-        clf \= SVC(C=C, gamma=gamma)
-
-        return cross\_val\_score(clf, X, y, cv=3).mean()
-
-    study \= optuna.create\_study(direction='maximize')
-
-    study.optimize(objective, n\_trials=10) \# n\_trials define o número de iterações
-
-    print("Melhores hiperparâmetros:", study.best\_params)
-
-    print("Melhor score:", study.best\_value)
 
   * **Vantagens:** Mais eficiente que Grid e Random Search, especialmente em espaços de hiperparâmetros complexos e caros de avaliar. Tende a encontrar melhores resultados com menos iterações.  
   * **Desvantagens:** Mais complexo de implementar e entender. Depende da escolha do surrogate model e da função de aquisição. Pode ficar preso em ótimos locais.
@@ -497,58 +436,7 @@ Modelos baseados em árvores oferecem métodos **intrínsecos** para calcular a 
 
   **Exemplo Prático (em Python com Scikit-learn):**
 
-    *from sklearn.datasets import make\_classification*
 
-    *from sklearn.ensemble import RandomForestClassifier*
-
-    *import matplotlib.pyplot as plt*
-
-    
-
-    *\# Gerar dados de exemplo*
-
-    *X, y \= make\_classification(n\_samples=1000, n\_features=10,*
-
-                               *n\_informative=3, n\_redundant=0,*
-
-                               *random\_state=42, class\_sep=1.5)*
-
-    *feature\_names \= \[f"feature\_{i}" for i in range(X.shape\[1\])\]*
-
-
-    *\# Treinar um Random Forest Classifier*
-
-    *model \= RandomForestClassifier(random\_state=42)*
-
-    *model.fit(X, y)*
-
-    
-
-    *\# Obter Feature Importances*
-
-    *importances \= model.feature\_importances\_*
-
-    
-
-    *\# Visualizar Feature Importances*
-
-    
-
-    *plt.figure(figsize=(10, 6))*
-
-    *plt.bar(feature\_names, importances)*
-
-    *plt.title("Feature Importances (Gini Importance)")*
-
-    *plt.xlabel("Features")*
-
-    *plt.ylabel("Importance")*
-
-    *plt.xticks(rotation=45, ha="right")*
-
-    *plt.tight\_layout()*
-
-    *plt.show()*
 
 * **Permutation Importance (Importância por Permutação):**  
   * **Conceito:** Este método é **model-agnóstico**, ou seja, pode ser aplicado a qualquer tipo de modelo (não apenas árvores). Ele avalia a importância de uma feature medindo a **diminuição no desempenho do modelo** quando os valores dessa feature são **permutados (aleatorizados)**. Se a permutação de uma feature causa uma grande queda no desempenho, significa que o modelo dependia fortemente dessa feature para fazer previsões, e portanto, ela é importante.  
@@ -567,71 +455,7 @@ Modelos baseados em árvores oferecem métodos **intrínsecos** para calcular a 
 
   **Exemplo Prático (em Python com Scikit-learn):**
 
-    *from sklearn.datasets import make\_classification*
 
-    *from sklearn.ensemble import RandomForestClassifier*
-
-    *from sklearn.inspection import permutation\_importance*
-
-    *from sklearn.model\_selection import train\_test\_split*
-
-    *import matplotlib.pyplot as plt*
-
-    *import numpy as np*
-
-    
-
-    *\# Gerar dados de exemplo*
-
-    *X, y \= make\_classification(n\_samples=1000, n\_features=10,*
-
-                              *n\_informative=3, n\_redundant=0,*
-
-                               *random\_state=42, class\_sep=1.5)*
-
-    *feature\_names \= \[f"feature\_{i}" for i in range(X.shape\[1\])\]*
-
-    
-
-    *\# Dividir dados em treino e teste*
-
-    *X\_train, X\_test, y\_train, y\_test \= train\_test\_split(X, y, test\_size=0.3, random\_state=42)*
-
-    
-
-    *\# Treinar um Random Forest Classifier*
-
-    *model \= RandomForestClassifier(random\_state=42)*
-
-    *model.fit(X\_train, y\_train)*
-
-    
-
-    *\# Calcular Permutation Importances*
-
-    *result \= permutation\_importance(model, X\_test, y\_test, n\_repeats=10, random\_state=42)*
-
-    *importances \= result.importances\_mean*
-
-    
-
-    *\# Visualizar Permutation Importances*
-
-    *plt.figure(figsize=(10, 6))*
-
-    *plt.bar(feature\_names, importances)*
-
-    *plt.title("Permutation Importances")*
-
-    *plt.xlabel("Features")*
-
-    *plt.ylabel("Importance")*
-
-    *plt.xticks(rotation=45, ha="right")*
-
-    *plt.tight\_layout()*
-
-    *plt.show()*
 
 
 #### **1.2 Métodos para Regressão Linear**
@@ -649,57 +473,8 @@ Em modelos de **Regressão Linear**, a **magnitude dos coeficientes** pode ser u
 
   **Exemplo Prático (em Python com Scikit-learn):**
 
-    
 
-    *from sklearn.datasets import make\_regression*
 
-    *from sklearn.linear\_model import LinearRegression*
-
-    *import matplotlib.pyplot as plt*
-
-    *import numpy as np*
-
-    
-
-    *\# Gerar dados de exemplo*
-
-    *X, y \= make\_regression(n\_samples=100, n\_features=5, noise=20, random\_state=42)*
-
-    *feature\_names \= \[f"feature\_{i}" for i in range(X.shape\[1\])\]*
-
-    
-
-    *\# Treinar um modelo de Regressão Linear*
-
-    *model \= LinearRegression()*
-
-    *model.fit(X, y)*
-
-    
-
-    *\# Obter Coeficientes*
-
-    *coefficients \= model.coef\_*
-
-    
-
-    *\# Visualizar Coeficientes (Magnitude como Importância)*
-
-    *plt.figure(figsize=(10, 6))*
-
-    *plt.bar(feature\_names, np.abs(coefficients)) \# Usando valor absoluto para magnitude*
-
-    *plt.title("Feature Importance (Magnitude dos Coeficientes \- Regressão Linear)")*
-
-    *plt.xlabel("Features")*
-
-    *plt.ylabel("Magnitude do Coeficiente")*
-
-    *plt.xticks(rotation=45, ha="right")*
-
-    *plt.tight\_layout()*
-
-    *plt.show()*
 
 ### **2\. SHAP Values e LIME: Explicando Previsões de Modelos Complexos**
 
@@ -725,71 +500,6 @@ Para modelos complexos, como redes neurais e modelos ensemble avançados (Gradie
 
     
 
-    *import shap*
-
-    *from sklearn.ensemble import RandomForestClassifier*
-
-    *from sklearn.datasets import make\_classification*
-
-    *from sklearn.model\_selection import train\_test\_split*
-
-    
-
-    *\# Gerar dados de exemplo*
-
-    *X, y \= make\_classification(n\_samples=100, n\_features=5,*
-
-                               *n\_informative=3, n\_redundant=0,*
-
-                               *random\_state=42, class\_sep=1.5)*
-
-    *feature\_names \= \[f"feature\_{i}" for i in range(X.shape\[1\])\]*
-
-    
-
-    *\# Dividir dados em treino e teste*
-
-    *X\_train, X\_test, y\_train, y\_test \= train\_test\_split(X, y, test\_size=0.2, random\_state=42)*
-
-    
-
-    *\# Treinar um Random Forest Classifier*
-
-    
-
-    *model \= RandomForestClassifier(random\_state=42)*
-
-    *model.fit(X\_train, y\_train)*
-
-    
-
-    *\# Inicializar o SHAP explainer (pode variar dependendo do modelo)*
-
-    *explainer \= shap.TreeExplainer(model) \# Para modelos baseados em árvores*
-
-    *shap\_values \= explainer.shap\_values(X\_test) \# Calcular SHAP values para o conjunto de teste*
-
-    *shap\_values\_class1 \= shap\_values\[1\]* 
-
-    *\# SHAP values para a classe positiva (classe 1\) em classificação binária*
-
-    *\# Force Plot para a primeira instância do conjunto de teste*
-
-    *shap.force\_plot(explainer.expected\_value\[1\],*
-
-    *shap\_values\_class1\[0,:\], features=X\_test\[0,:\], feature\_names=feature\_names, matplotlib=True)*
-
-    *\# Summary Plot (Bar Plot) \- Importance geral das features*
-
-    *shap.summary\_plot(shap\_values,*
-
-     *features=X\_test, feature\_names=feature\_names, plot\_type="bar")*
-
-    *\# Summary Plot (Beeswarm Plot) \- Distribuição e impacto dos valores das features*
-
-    *shap.summary\_plot(shap\_values,* 
-
-    *features=X\_test, feature\_names=feature\_names, plot\_type="violin")*
 
 
   Os exemplos de visualizações SHAP acima (Force Plot, Bar Summary Plot, Beeswarm Summary Plot) são gerados pelo código. O Force Plot explica a previsão para uma única instância, enquanto os Summary Plots agregam informações para todo o conjunto de dados, fornecendo insights sobre a importância geral das features e como seus valores se relacionam com as previsões do modelo.
@@ -811,79 +521,7 @@ Para modelos complexos, como redes neurais e modelos ensemble avançados (Gradie
 * **Exemplo Prático (em Python com lime library):**
 
 
-  *import lime*  
-  *import lime.lime\_tabular*  
-  *from sklearn.ensemble import RandomForestClassifier*  
-  *from sklearn.datasets import make\_classification*  
-  *from sklearn.model\_selection import train\_test\_split*  
-  *import numpy as np*
 
-  *\# Gerar dados de exemplo*
-
-  *X, y \= make\_classification(n\_samples=100, n\_features=5,*
-
-                             *n\_informative=3, n\_redundant=0,*
-
-                             *random\_state=42, class\_sep=1.5)*
-
-  *feature\_names \= \[f"feature\_{i}" for i in range(X.shape\[1\])\]*
-
-  *class\_names \= \['negative', 'positive'\]*
-
-
-  *\# Dividir dados em treino e teste*
-
-  *X\_train, X\_test, y\_train, y\_test \= train\_test\_split(X, y, test\_size=0.2, random\_state=42)*
-
-
-  *\# Treinar um Random Forest Classifier*
-
-  *model \= RandomForestClassifier(random\_state=42)*
-
-  *model.fit(X\_train, y\_train)*
-
-
-  *\# Criar um LIME explainer para dados tabulares*
-
-  *explainer \= lime.lime\_tabular.LimeTabularExplainer(*
-
-      *training\_data=X\_train,*
-
-      *feature\_names=feature\_names,*
-
-      *class\_names=class\_names,*
-
-      *mode='classification'*
-
-  *)*
-
-  *\# Escolher uma instância de teste para explicar (ex: a primeira instância)*
-
-  *instance\_to\_explain \= X\_test\[0, :\]*
-
-  *\# Gerar a explicação LIME para a instância*
-
-  *explanation \= explainer.explain\_instance(*
-
-      *data\_row=instance\_to\_explain,*
-
-      *predict\_fn=model.predict\_proba, \# Função de predição do modelo (probabilidades)*
-
-      *num\_features=5 \# Número de features a incluir na explicação local*
-
-  *)*
-
-  *\# Visualizar a explicação LIME*
-
-  *explanation.show\_in\_notebook(show\_table=True, show\_all=False)*
-
-  *\# Para visualizar em formato de gráfico (matplotlib)*
-
-  *fig \= explanation.as\_pyplot\_figure()*
-
-  *plt.tight\_layout()*
-
-  *plt.show()*
 
   As visualizações LIME geradas (formato notebook e gráfico matplotlib) mostram as contribuições locais de cada feature para a previsão do modelo complexo para a instância específica explicada. Barras maiores (ou valores maiores na tabela) indicam features com maior influência local na previsão. O sinal da contribuição indica a direção do impacto (positivo ou negativo) na previsão.
 
